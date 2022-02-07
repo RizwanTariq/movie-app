@@ -1,9 +1,9 @@
 <template>
-  <div><h1>About Page</h1></div>
+  <h1>{{ $route.params.id }}</h1>
 </template>
 
 <script>
 export default {};
 </script>
 
-<style scoped></style>
+<style></style>
