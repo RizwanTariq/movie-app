@@ -11,7 +11,10 @@
         Clear Search
       </button>
     </div>
-    <div class="container movies">
+    <div v-if="isLoading" class="container">
+      <Loading />
+    </div>
+    <div v-else-if="!isLoading" class="container movies">
       <div class="movies-grid" id="movie-grid">
         <div class="movie" v-for="(movie, index) in movies" :key="index">
           <div class="movie-img">
@@ -50,31 +53,41 @@
 </template>
 
 <script>
+import Loading from "../components/Loading.vue";
 import { getMovies, getSearchedMovies } from "../services/moviesService";
 export default {
+  components: { Loading },
   name: "IndexPage",
   data() {
     return {
       movies: [],
       searchText: "",
+      isLoading: false,
     };
   },
   async fetch() {
+    this.isLoading = true;
     this.movies = await getMovies();
+    this.isLoading = false;
   },
   methods: {
     async handleSearch() {
+      this.isLoading = true;
       if (this.searchText) {
         const movies = await getSearchedMovies(this.searchText);
         this.movies = movies;
+        this.isLoading = false;
       } else {
-        this.movies = await getMovies();
+        this.$fetch();
+        this.isLoading = false;
       }
     },
     async handleClear() {
+      this.isLoading = true;
       if (this.searchText) {
         this.searchText = "";
-        this.movies = await getMovies();
+        this.$fetch();
+        this.isLoading = false;
       }
     },
   },
